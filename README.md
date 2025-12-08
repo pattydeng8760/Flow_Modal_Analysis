@@ -18,12 +18,15 @@ This section summarizes the core mathematics of POD, SPOD, and DMD, using consis
 
 Let $\mathbf{q}(\boldsymbol{\xi}, t)$ denote a scalar or vector flow quantity (e.g., one velocity component, pressure, vorticity) defined over a spatial grid with $n$ degrees of freedom and sampled at $m$ time instants $t_1, \dots, t_m$.
 
-We form column vectors
+We form column vectors,
+
 $$
 \mathbf{x}_k \in \mathbb{R}^n, \quad \mathbf{x}_k 
 = \mathbf{q}(\boldsymbol{\xi}, t_k),
 $$
-and collect them into a snapshot matrix
+
+and collect them into a snapshot matrix,
+
 $$
 \mathbf{X} = 
 \begin{bmatrix}
@@ -32,13 +35,16 @@ $$
 \in \mathbb{R}^{n \times m}.
 $$
 
-In many flows, it is useful to separate the data into mean and fluctuations,
+In many flows, it is useful to separate the data into mean and fluctuations by means of Reynolds decomposition,
+
 $$
 \bar{\mathbf{x}} = \frac{1}{m} \sum_{k=1}^m \mathbf{x}_k, 
 \qquad 
 \mathbf{x}'_k = \mathbf{x}_k - \bar{\mathbf{x}},
 $$
+
 and define the fluctuation matrix
+
 $$
 \mathbf{X}' = 
 \begin{bmatrix}
@@ -55,6 +61,7 @@ All three methods (POD, SPOD, DMD) act on variants of this snapshot matrix or it
 #### 1.2.1 Objective
 
 POD seeks an orthonormal basis $\{ \boldsymbol{\phi}_j \}_{j=1}^r$ that optimally (in an $L^2$ or kinetic-energy sense) represents the fluctuations:
+
 $$
 \mathbf{x}'_k \approx \sum_{j=1}^r a_j(t_k)\, \boldsymbol{\phi}_j.
 $$
@@ -64,57 +71,73 @@ The POD modes $\boldsymbol{\phi}_j$ are spatial structures; the coefficients $a_
 #### 1.2.2 Correlation and Eigenvalue Problem
 
 The classical POD is defined via the spatial correlation (covariance) tensor
+
 $$
 \mathbf{C} = \frac{1}{m} \mathbf{X}' {\mathbf{X}'}^\top \in \mathbb{R}^{n \times n}.
 $$
-We seek eigenpairs
+
+We seek eigenpairs,
+
 $$
 \mathbf{C} \boldsymbol{\phi}_j = \lambda_j \boldsymbol{\phi}_j, 
 \qquad \lambda_1 \ge \lambda_2 \ge \dots \ge 0,
 $$
+
 where $\boldsymbol{\phi}_j$ are POD modes and $\lambda_j$ are the associated modal energies. Because $n$ is typically very large, one rarely forms $\mathbf{C}$ explicitly.
 
 #### 1.2.3 Method of Snapshots / SVD Formulation
 
 In practice, POD is computed via the method of snapshots or singular value decomposition (SVD). Define the temporal correlation matrix
+
 $$
 \mathbf{R} = \frac{1}{m} {\mathbf{X}'}^\top \mathbf{X}' \in \mathbb{R}^{m \times m}.
 $$
-Solve
+
+Solve,
+
 $$
 \mathbf{R} \mathbf{a}_j = \lambda_j \mathbf{a}_j,
 $$
+
 where $\mathbf{a}_j \in \mathbb{R}^m$ are eigenvectors of $\mathbf{R}$.
 
-The POD modes are reconstructed as
+The POD modes are reconstructed as,
+
 $$
 \boldsymbol{\phi}_j 
 = \frac{1}{\sqrt{m \lambda_j}} \mathbf{X}' \mathbf{a}_j.
 $$
 
 Equivalently, perform an economy-sized SVD:
+
 $$
 \mathbf{X}' = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^\top,
 $$
+
 with
 - $\mathbf{U} \in \mathbb{R}^{n \times r}$: POD modes (left singular vectors),
 - $\mathbf{V} \in \mathbb{R}^{m \times r}$: normalized temporal coefficients (right singular vectors),
-- $\boldsymbol{\Sigma} = \operatorname{diag}(\sigma_1, \dots, \sigma_r)$: singular values.
+- $\boldsymbol{\Sigma} = \text{diag}(\sigma_1, \dots, \sigma_r)$: singular values.
 
-Then
+Then,
+
 $$
 \boldsymbol{\phi}_j = \mathbf{u}_j, \qquad 
 \lambda_j = \frac{\sigma_j^2}{m},
 $$
-and the temporal coefficients are
+
+and the temporal coefficients are,
+
 $$
 a_j(t_k) = \sigma_j v_{kj},
 $$
+
 where $v_{kj}$ is the $k$-th component of the right singular vector $\mathbf{v}_j$.
 
 #### 1.2.4 Reconstruction
 
 The fluctuation field is approximated as
+
 $$
 \mathbf{x}'_k \approx \sum_{j=1}^r a_j(t_k) \boldsymbol{\phi}_j,
 \quad
@@ -148,6 +171,7 @@ SPOD is a frequency-domain variant of POD tailored to statistically stationary f
 #### 1.3.1 Data Segmentation and Fourier Transform
 
 Assume we have a long time series of snapshots with uniform sampling period $\Delta t$. We divide the data into $n_b$ blocks (possibly overlapping), each containing $m_{\text{FFT}}$ snapshots:
+
 $$
 \mathbf{X}^{(\ell)} =
 \begin{bmatrix}
@@ -156,7 +180,8 @@ $$
 \quad \ell = 1, \dots, n_b.
 $$
 
-For each block $\ell$, compute a temporal discrete Fourier transform (e.g., via FFT) to obtain
+For each block $\ell$, compute a temporal discrete Fourier transform (e.g., via FFT) to obtain,
+
 $$
 \hat{\mathbf{X}}^{(\ell)} =
 \begin{bmatrix}
@@ -167,9 +192,11 @@ $$
 \end{bmatrix}
 \in \mathbb{C}^{n \times m_{\text{FFT}}},
 $$
+
 where $\omega_k$ are discrete angular frequencies.
 
-At a fixed frequency $\omega_k$, collect all realizations into
+At a fixed frequency $\omega_k$, collect all realizations into,
+
 $$
 \hat{\mathbf{X}}^{\omega_k} =
 \begin{bmatrix}
@@ -183,24 +210,27 @@ $$
 
 #### 1.3.2 Cross-Spectral Density and Eigenvalue Problem
 
-The cross-spectral density (CSD) tensor at frequency $\omega_k$ is
+The cross-spectral density (CSD) tensor at frequency $\omega_k$ is,
+
 $$
 \mathbf{S}(\omega_k)
 = \frac{1}{n_b} \hat{\mathbf{X}}^{\omega_k} 
 \, \hat{\mathbf{X}}^{\omega_k\, *^\top}
 \in \mathbb{C}^{n \times n},
 $$
+
 where $*$ denotes complex conjugation.
 
-SPOD modes $\boldsymbol{\phi}_{\omega_k, j}$ and their energies $\lambda_{\omega_k, j}$ are defined as the eigenpairs of the CSD:
+SPOD modes $\mathbf{\phi}_{\omega_k, j}$ and their energies $\lambda_{\omega_k, j}$ are defined as the eigenpairs of the CSD:
+
 $$
-\mathbf{S}(\omega_k) \, \boldsymbol{\phi}_{\omega_k, j}
-= \lambda_{\omega_k, j} \, \boldsymbol{\phi}_{\omega_k, j},
+\mathbf{S}(\omega_k) \, \mathbf{\phi}_{\omega_k, j}
+= \lambda_{\omega_k, j} \, \mathbf{\phi}_{\omega_k, j},
 \qquad
 \lambda_{\omega_k, 1} \ge \lambda_{\omega_k, 2} \ge \dots \ge 0.
 $$
 
-Each mode $\boldsymbol{\phi}_{\omega_k, j}$ represents a spatial structure that oscillates at the single frequency $\omega_k$, with energy $\lambda_{\omega_k, j}$.
+Each mode $\mathbf{\phi}_{\omega_k, j}$ represents a spatial structure that oscillates at the single frequency $\omega_k$, with energy $\lambda_{\omega_k, j}$.
 
 In practice, as with spatial POD, one uses an SVD of the reduced matrix at each frequency to compute SPOD modes efficiently.
 
@@ -218,7 +248,7 @@ In practice, as with spatial POD, one uses an SVD of the reduced matrix at each 
 - **Stationarity assumption:** SPOD relies on statistical stationarity. Strongly transient or non-stationary flows are not well described by a purely spectral approach.
 - **Data requirements:** Requires long, high-quality time series to obtain converged spectral estimates across frequencies, which may be expensive to generate or store.
 - **Parameter choices:** Results depend on choices such as block length, overlap, and windowing (Welch parameters). Poor choices can smear narrowband features or introduce spectral leakage.
-- **Computational cost:** For very large datasets and many frequencies, repeatedly forming and decomposing CSD matrices can be demanding, though parallelization and randomized linear algebra can mitigate this.
+- **Computational cost:** For very large datasets and many frequencies, repeatedly forming and decomposing CSD matrices can be demanding, though parallelization can mitigate this.
 
 ---
 
@@ -229,6 +259,7 @@ DMD is a data-driven technique that approximates a best-fit linear operator gove
 #### 1.4.1 Snapshot Pairs and Linear Mapping
 
 Assume uniformly spaced snapshots with time step $\Delta t$. Define two snapshot matrices:
+
 $$
 \mathbf{X} =
 \begin{bmatrix}
@@ -241,24 +272,30 @@ $$
 \end{bmatrix}.
 $$
 
-DMD assumes the existence of a linear operator $\mathbf{A}$ such that
+DMD assumes the existence of a linear operator $\mathbf{A}$ such that,
+
 $$
 \mathbf{X}' \approx \mathbf{A}\, \mathbf{X},
 $$
+
 where $\mathbf{A} \in \mathbb{C}^{n \times n}$ advances the state by one time step.
 
-In a least-squares sense, the best-fit operator is
+In a least-squares sense, the best-fit operator is,
+
 $$
 \mathbf{A} = \mathbf{X}' \mathbf{X}^+,
 $$
+
 with $\mathbf{X}^+$ the Moore–Penrose pseudoinverse of $\mathbf{X}$. Because $n$ is large, we avoid forming $\mathbf{A}$ explicitly.
 
 #### 1.4.2 Reduced DMD via SVD
 
 Compute an economy SVD of $\mathbf{X}$:
+
 $$
 \mathbf{X} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^*,
 $$
+
 where
 - $\mathbf{U} \in \mathbb{C}^{n \times r}$,
 - $\boldsymbol{\Sigma} \in \mathbb{R}^{r \times r}$,
@@ -266,6 +303,7 @@ where
 and $^*$ denotes the conjugate transpose.
 
 Project $\mathbf{A}$ onto the $r$-dimensional subspace spanned by $\mathbf{U}$:
+
 $$
 \tilde{\mathbf{A}} 
 = \mathbf{U}^* \mathbf{A} \mathbf{U}
@@ -274,35 +312,44 @@ $$
 \in \mathbb{C}^{r \times r}.
 $$
 
-Solve the reduced eigenvalue problem
+Solve the reduced eigenvalue problem,
+
 $$
 \tilde{\mathbf{A}} \mathbf{W} = \mathbf{W} \boldsymbol{\Lambda},
 $$
-where $\boldsymbol{\Lambda} = \operatorname{diag}(\lambda_1, \dots, \lambda_r)$ contains the discrete-time DMD eigenvalues and columns of $\mathbf{W}$ are eigenvectors.
 
-The **DMD modes** in the full state space are
+where $\mathbf{\Lambda} = \text{diag}(\lambda_1, \dots, \lambda_r)$ contains the discrete-time DMD eigenvalues and columns of $\mathbf{W}$ are eigenvectors.
+
+The **DMD modes** in the full state space are,
+
 $$
 \boldsymbol{\Phi} = \mathbf{X}' \mathbf{V} \boldsymbol{\Sigma}^{-1} \mathbf{W}
 \in \mathbb{C}^{n \times r},
 $$
+
 with columns $\boldsymbol{\phi}_j$ giving spatial structures.
 
 #### 1.4.3 Growth Rates and Frequencies
 
 Each eigenvalue $\lambda_j$ encodes growth/decay and oscillation:
+
 $$
 \lambda_j = e^{(\mu_j + i \omega_j) \Delta t},
 $$
+
 where
 - $\mu_j = \frac{1}{\Delta t} \Re(\log \lambda_j)$ is the growth/decay rate,
 - $\omega_j = \frac{1}{\Delta t} \Im(\log \lambda_j)$ is the (angular) frequency.
 
 Thus, the dynamics are approximated as
+
 $$
 \mathbf{x}_k \approx 
 \sum_{j=1}^r b_j \boldsymbol{\phi}_j \lambda_j^{k-1},
 $$
-where coefficients $b_j$ are determined from the initial condition $\mathbf{x}_1$ by solving
+
+where coefficients $b_j$ are determined from the initial condition $\mathbf{x}_1$ by solving,
+
 $$
 \mathbf{x}_1 = \sum_{j=1}^r b_j \boldsymbol{\phi}_j.
 $$
@@ -325,7 +372,7 @@ $$
 
 ---
 
-## 2. Code Structure (High-Level)
+## 2. Code Structure
 
 A typical organization for this repository might be:
 
@@ -346,7 +393,10 @@ A typical organization for this repository might be:
 
 - `dmd.py`  
   Core DMD implementation (SVD-based, with options for rank truncation, frequency selection, and reconstruction).
-
+  
+- `pod.py`  
+  Core POD implementation (SVD-based, with options for rank truncation, frequency selection, and reconstruction).
+  
 - `ModalAnalysis.py`  
   High-level interface for performing POD, SPOD, and DMD on given datasets (e.g., method selection, parameter handling, and post-processing).
 
