@@ -97,9 +97,9 @@ $$
 \mathbf{X}' = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^\top,
 $$
 with
-- $ \mathbf{U} \in \mathbb{R}^{n \times r} $: POD modes (left singular vectors),
-- $ \mathbf{V} \in \mathbb{R}^{m \times r} $: normalized temporal coefficients (right singular vectors),
-- $ \boldsymbol{\Sigma} = \operatorname{diag}(\sigma_1, \dots, \sigma_r) $: singular values.
+- $\mathbf{U} \in \mathbb{R}^{n \times r}$: POD modes (left singular vectors),
+- $\mathbf{V} \in \mathbb{R}^{m \times r}$: normalized temporal coefficients (right singular vectors),
+- $\boldsymbol{\Sigma} = \operatorname{diag}(\sigma_1, \dots, \sigma_r)$: singular values.
 
 Then
 $$
@@ -156,7 +156,7 @@ $$
 \quad \ell = 1, \dots, n_b.
 $$
 
-For each block $ \ell $, compute a temporal discrete Fourier transform (e.g., via FFT) to obtain
+For each block $\ell$, compute a temporal discrete Fourier transform (e.g., via FFT) to obtain
 $$
 \hat{\mathbf{X}}^{(\ell)} =
 \begin{bmatrix}
@@ -169,7 +169,7 @@ $$
 $$
 where $\omega_k$ are discrete angular frequencies.
 
-At a fixed frequency $ \omega_k $, collect all realizations into
+At a fixed frequency $\omega_k$, collect all realizations into
 $$
 \hat{\mathbf{X}}^{\omega_k} =
 \begin{bmatrix}
@@ -200,7 +200,7 @@ $$
 \lambda_{\omega_k, 1} \ge \lambda_{\omega_k, 2} \ge \dots \ge 0.
 $$
 
-Each mode $\boldsymbol{\phi}_{\omega_k, j}$ represents a spatial structure that oscillates at the single frequency $ \omega_k $, with energy $\lambda_{\omega_k, j}$.
+Each mode $\boldsymbol{\phi}_{\omega_k, j}$ represents a spatial structure that oscillates at the single frequency $\omega_k$, with energy $\lambda_{\omega_k, j}$.
 
 In practice, as with spatial POD, one uses an SVD of the reduced matrix at each frequency to compute SPOD modes efficiently.
 
@@ -260,12 +260,12 @@ $$
 \mathbf{X} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^*,
 $$
 where
-- $ \mathbf{U} \in \mathbb{C}^{n \times r} $,
-- $ \boldsymbol{\Sigma} \in \mathbb{R}^{r \times r} $,
-- $ \mathbf{V} \in \mathbb{C}^{m-1 \times r} $,
-and $^* $ denotes the conjugate transpose.
+- $\mathbf{U} \in \mathbb{C}^{n \times r}$,
+- $\boldsymbol{\Sigma} \in \mathbb{R}^{r \times r}$,
+- $\mathbf{V} \in \mathbb{C}^{m-1 \times r}$,
+and $^*$ denotes the conjugate transpose.
 
-Project $\mathbf{A}$ onto the $r$-dimensional subspace spanned by $ \mathbf{U} $:
+Project $\mathbf{A}$ onto the $r$-dimensional subspace spanned by $\mathbf{U}$:
 $$
 \tilde{\mathbf{A}} 
 = \mathbf{U}^* \mathbf{A} \mathbf{U}
