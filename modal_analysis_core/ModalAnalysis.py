@@ -18,6 +18,7 @@ def parse_arguments(argv=None):
     parser.add_argument("--dest-dir", "-o", type=str, default=os.getcwd(), help="Destination directory for output data.")
     parser.add_argument("--dest-file", "-D", type=str, default=None, help="Destination subdirectory name for extracted and filtered raw data. If not provided, uses the basename of sol-dir. \
                         If provided, this will copy the files over from the sol-dir to the provided loation.")
+    parser.add_argument("--AoA", type=int, default=10, help="Angle of attack for the mesh and data extraction.")
     # Mesh information
     parser.add_argument("--mesh-dir", "-m", type=str, required=True, help="Directory of the mesh file.")
     parser.add_argument("--mesh-file", "-M", type=str, required=True, help="Mesh file name in .h5 format.")
@@ -56,6 +57,7 @@ class ModalAnalysis():
         self.compute_mode = self.args.compute_mode
         self.var = self.args.var
         self.data_type = self.args.data_type
+        self.AoA = self.args.AoA
         # Mesh information
         self.mesh = SimpleNamespace()
         self.mesh.mesh_dir = self.args.mesh_dir
@@ -105,7 +107,7 @@ class ModalAnalysis():
         self.output = extract_files(self.args.sol_dir,self.args.sol_file,self.args.dest_dir,self.args.dest_file,
                                 self.args.dmd_output_dir,option=self.sample.option,maxfile=self.sample.maxfile,nskip=self.sample.nskip,reload=self.args.reload_source,skip=self.args.skip_extract)
         # Extracting the mesh surface
-        self.mesh.DMD_mesh, self.mesh.mesh_node = extract_surface(self.mesh.mesh_dir, self.mesh.mesh_file, self.modal_output, self.data_type, self.args.dest_file)
+        self.mesh.DMD_mesh, self.mesh.mesh_node = extract_surface(self.mesh.mesh_dir, self.mesh.mesh_file, self.modal_output, self.data_type, self.args.dest_file, AoA=self.AoA)
         # Extracting the data
         self.data.ntime, self.data.DMD_source = extract_data(self.args.sol_dir, self.modal_output, self.mesh.mesh_node, self.args.dest_file, self.data_type, self.var, 
                                     option=self.sample.option, nstart=self.sample.nstart,maxfile=self.sample.maxfile,nskip=self.sample.nskip, fluc=self.fluc, load_existing=self.args.reload_source)
