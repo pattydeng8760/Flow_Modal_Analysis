@@ -55,7 +55,7 @@ def map_cut(data_type:str,cut_style:str,tip_gap:float,span:float,AoA:int):
     elif data_type == 'CLIP':
         origin = [1.42222035,0.,z_loc.z_tip_gap]
         normal = [1.,0.,0.]
-    print('The selected cut is of style: {0}'.format(data_type))
-    print('The selected cut origin is: {0}'.format(origin))
-    print('The selected cut normal is: {0}'.format(normal))
+    print('     The selected cut is of style: {0}'.format(data_type))
+    print('     The selected cut origin is: {0}'.format(origin))
+    print('     The selected cut normal is: {0}'.format(normal))
     return origin,normal

@@ -275,7 +275,7 @@ $$
 DMD assumes the existence of a linear operator $\mathbf{A}$ such that,
 
 $$
-\mathbf{X}' \approx \mathbf{A}\, \mathbf{X},
+\mathbf{X}' \approx \mathbf{A}\ \mathbf{X}
 $$
 
 where $\mathbf{A} \in \mathbb{C}^{n \times n}$ advances the state by one time step.
